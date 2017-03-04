@@ -1,4 +1,5 @@
 var FPS =60;
+var clock = 0;
 // 創造 img HTML 元素，並放入變數中
 var bgImg = document.createElement("img");
 var enemyImg = document.createElement("img");
@@ -18,10 +19,18 @@ var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
 function draw(){
-	enemy.move();
+	clock++;
+	if((clock%80)==0){
+		var newEnemy = new Enemy();
+		enemies.push(newEnemy);
+	}
+	
 	// 將背景圖片畫在 canvas 上的 (0,0) 位置
 	ctx.drawImage(bgImg,0,0);
-	ctx.drawImage(enemyImg,enemy.x,enemy.y);
+	for (var i=0;i<enemies.length;i++){
+		enemies[i].move();
+		ctx.drawImage(enemyImg,enemies[i].x,enemies[i].y);
+}
 	ctx.drawImage(button,640-64,480-64,64,64);
 	if(isBuilding==true){
 		ctx.drawImage(towerimg,cursor.x,cursor.y);
@@ -33,17 +42,54 @@ function draw(){
 // 執行 draw 函式
 setInterval(draw, 1000/FPS);
 
-var  enemy ={
-x: 64,
-y: 480-32,
-speedX:0,
-speedY:-64,
-move:function(){
-	this.x+=this.speedX/FPS;
-	this.y+=this.speedY/FPS;
-}
-};
- 
+var enemyPath=[
+{x:64,y:352},
+{x:128,y:352},
+{x:128,y:224},
+{x:288,y:224},
+{x:288,y:384},
+{x:576,y:384},
+{x:576,y:224},
+{x:448,y:224},
+{x:448,y:0},
+{x:320,y:0},
+{x:320,y:96},
+{x:128,y:96},
+];
+
+function Enemy (){
+	this.x = 64;
+	this.y = 480-32;
+	this.speedX = 0;
+	this.speedY = -64;
+	this.PathDes = 0;
+	this.move = function(){
+		if(isCollided(enemyPath[this.PathDes].x,enemyPath[this.PathDes].y,this.x,this.y,64/FPS,64/FPS)){
+			this.x = enemyPath[this.PathDes].x;
+			this.y = enemyPath[this.PathDes].y;
+
+			this.PathDes++;
+			if(enemyPath[this.PathDes].y < this.y){
+				this.speedX=0;
+				this.speedY=-64	;
+			}else if(enemyPath[this.PathDes].x > this.x){
+				this.speedX=64;
+				this.speedY=0	;
+			}else if(enemyPath[this.PathDes].y > this.y) {
+				this.speedX=0;
+				this.speedY=64	;
+			}else if(enemyPath[this.PathDes].x < this.x) {
+				this.speedX=-64;
+				this.speedY=0	;
+			}
+		}else{
+			this.x+=this.speedX/FPS;
+			this.y+=this.speedY/FPS;
+		}
+	}
+ }
+ var enemies = [];
+
  var  cursor ={
 x: 96,
 y: 480-32
@@ -78,7 +124,16 @@ function mouseclick(event){
 	}
 }
 
-
+function isCollided(pointX,pointY,targetX,targetY,targetWidth,targetHeight){
+	if(targetX <= pointX &&
+			pointX <= targetX + targetWidth &&	
+		targetY <= pointY && 
+			pointY <= targetY + targetHeight){
+		return true
+	}else{
+		return false
+	}
+}
 
 
 

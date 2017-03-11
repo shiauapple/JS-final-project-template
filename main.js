@@ -1,17 +1,19 @@
 var FPS =60;
 var clock = 0;
+var hp = 100;
+
 // 創造 img HTML 元素，並放入變數中
 var bgImg = document.createElement("img");
 var enemyImg = document.createElement("img");
 var button = document.createElement("img");
 var towerimg = document.createElement("img");
-
+var crosshairimg=document.createElement("img");
 // 設定這個元素的要顯示的圖片
 bgImg.src = "images/map.png";
 enemyImg.src = "images/86363.png";
 button.src = "images/tower-btn.png";
 towerimg.src = "images/tower.png";
-
+crosshairimg.src="images/crosshair.png";
 // 找出網頁中的 canvas 元素
 var canvas = document.getElementById("game-canvas");
 
@@ -20,6 +22,8 @@ var ctx = canvas.getContext("2d");
 
 function draw(){
 	clock++;
+
+
 	if((clock%80)==0){
 		var newEnemy = new Enemy();
 		enemies.push(newEnemy);
@@ -28,15 +32,31 @@ function draw(){
 	// 將背景圖片畫在 canvas 上的 (0,0) 位置
 	ctx.drawImage(bgImg,0,0);
 	for (var i=0;i<enemies.length;i++){
+		if(enemies[i].hp<=0){
+			enemies.splice(i,1);
+		}else{
+
+		}
+		
 		enemies[i].move();
-		ctx.drawImage(enemyImg,enemies[i].x,enemies[i].y);
-}
+			ctx.drawImage(enemyImg,enemies[i].x,enemies[i].y);
+	}
+		tower.searchEnemy();
+		if(tower.aimingEnemyId != null){
+			var id = tower.aimingEnemyId;
+			console.log(id)
+			ctx.drawImage(crosshairimg,enemies[id].x,enemies[id].y);
+		}
+	ctx.fillText("HP:"+hp,0,20)
+	ctx.font="24px Arial";
+	ctx.fillStyle="white";
 	ctx.drawImage(button,640-64,480-64,64,64);
 	if(isBuilding==true){
 		ctx.drawImage(towerimg,cursor.x,cursor.y);
 	}else{
 		ctx.drawImage(towerimg,tower.x,tower.y);
 	}
+
 }
 
 // 執行 draw 函式
@@ -60,15 +80,22 @@ var enemyPath=[
 function Enemy (){
 	this.x = 64;
 	this.y = 480-32;
+	this.hp = 1
 	this.speedX = 0;
 	this.speedY = -64;
 	this.PathDes = 0;
 	this.move = function(){
 		if(isCollided(enemyPath[this.PathDes].x,enemyPath[this.PathDes].y,this.x,this.y,64/FPS,64/FPS)){
-			this.x = enemyPath[this.PathDes].x;
-			this.y = enemyPath[this.PathDes].y;
+				this.x = enemyPath[this.PathDes].x;
+				this.y = enemyPath[this.PathDes].y;
 
 			this.PathDes++;
+			if(this.PathDes == enemyPath.length){
+				this.hp = 0;
+				hp-= 10;
+				return;
+			}
+
 			if(enemyPath[this.PathDes].y < this.y){
 				this.speedX=0;
 				this.speedY=-64	;
@@ -96,8 +123,21 @@ y: 480-32
 };
 
 var tower = {
-x:0,
-y:0
+	x:0,
+	y:0,
+	range:96,
+	aimingEnemyId:null,
+	searchEnemy: function(){
+		for(var i=0; i<enemies.length; i++){
+			var distance = Math.sqrt(Math.pow(this.x-enemies[i].x,2) + Math.pow(this.y-enemies[i].y,2));
+			if (distance<=this.range) {
+				this.aimingEnemyId = i;
+				return;
+			}
+		}
+		// 如果都沒找到，會進到這行，清除鎖定的目標
+		this.aimingEnemyId = null;
+	}
 }
 
 	$("#game-canvas").on("mousemove",mousemove);

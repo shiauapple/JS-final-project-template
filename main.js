@@ -52,7 +52,7 @@ function draw(){
 		if(towers[i].aimingEnemyId != null){
 			var id = towers[i].aimingEnemyId;
 			console.log(id)
-			ctx.drawImage(crosshairimg,enemies[id].x,enemies[id].y);
+			ctx.drawImage(crosshairimg,enemies[id].x,enemies[id]);
 		}
 	}
 	ctx.fillText("分數:"+Score,0,40)

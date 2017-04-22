@@ -4,6 +4,7 @@ var hp = 100;
 var Score =-1;
 var Money =95;
 var kill = 0;
+var notkill = 0;
 
 // 創造 img HTML 元素，並放入變數中
 var bgImg = document.createElement("img");
@@ -37,6 +38,14 @@ function draw(){
 	ctx.drawImage(bgImg,0,0);
 	for (var i=0;i<enemies.length;i++){
 		if(enemies[i].hp<=0){
+			if (notkill==1) {
+				enemies.splice(i,1);
+			Score-=1
+			Money+=5
+			notkill=0
+			}else{
+
+			}
 			enemies.splice(i,1);
 			Money+=5
 			Score+=1
@@ -57,9 +66,9 @@ function draw(){
 	}
 	ctx.fillText("分數:"+Score,0,40)
 	ctx.fillText("金錢:"+Money,0,60)
-	ctx.fillText("HP:"+hp,0,20)
+	ctx.fillText("血量:"+hp,0,20)
 	ctx.font="24px Arial";
-	ctx.fillStyle="white";
+	ctx.fillStyle="black";
 	ctx.drawImage(button,640-64,480-64,64,64);
 	if(isBuilding==true){
 		ctx.drawImage(towerimg,cursor.x,cursor.y);}
@@ -110,6 +119,7 @@ function Enemy (){
 			if(this.PathDes == enemyPath.length){
 				this.hp = 0;
 				hp-= 10;
+				notkill = 1;
 				return;
 			}
 
@@ -192,12 +202,12 @@ function mouseclick(event){
 	}else{
 		//蓋塔
 		if(isBuilding ==true){
-			if( Money >= 10 ){
+			if( Money >= 50 ){
 				var newTower = new Tower()
 				newTower.x=cursor.x-cursor.x%32;
 				newTower.y=cursor.y-cursor.y%32;
 				towers.push(newTower);
-				Money -=10;
+				Money -=30;
 			}
 		}
 		//建造完成

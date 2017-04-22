@@ -118,7 +118,7 @@ function Enemy (){
 			this.PathDes++;
 			if(this.PathDes == enemyPath.length){
 				this.hp = 0;
-				hp-= 10;
+				hp-= 1;
 				notkill = 1;
 				return;
 			}

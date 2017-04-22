@@ -5,7 +5,7 @@ var Score =-1;
 var Money =95;
 var kill = 0;
 var notkill = 0;
-var High 
+
 
 // 創造 img HTML 元素，並放入變數中
 var bgImg = document.createElement("img");
@@ -27,12 +27,7 @@ var ctx = canvas.getContext("2d");
 
 function draw(){
 	clock++;
-	if(Score>=High) {
-		High=Score
-		
-	}else{
-
-	}
+	
 
 
 
@@ -74,7 +69,6 @@ function draw(){
 	ctx.fillText("分數:"+Score,0,45)
 	ctx.fillText("金錢:"+Money,0,70)
 	ctx.fillText("血量:"+hp,0,20)
-	ctx.fillText("最高紀錄:"+High,0,95)
 	ctx.font="24px Arial";
 	ctx.fillStyle="black";
 	ctx.drawImage(button,640-64,480-64,64,64);

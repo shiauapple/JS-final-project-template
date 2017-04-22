@@ -5,6 +5,7 @@ var Score =-1;
 var Money =95;
 var kill = 0;
 var notkill = 0;
+var High 
 
 // 創造 img HTML 元素，並放入變數中
 var bgImg = document.createElement("img");
@@ -26,6 +27,12 @@ var ctx = canvas.getContext("2d");
 
 function draw(){
 	clock++;
+	if(Score>=High) {
+		High=Score
+		
+	}else{
+
+	}
 
 
 
@@ -49,7 +56,7 @@ function draw(){
 			enemies.splice(i,1);
 			Money+=5
 			Score+=1
-			kill+=0.5
+			kill+=0.1
 		}else{
 		
 		enemies[i].move();
@@ -64,9 +71,10 @@ function draw(){
 			ctx.drawImage(crosshairimg,enemies[id].x,enemies[id]);
 		}
 	}
-	ctx.fillText("分數:"+Score,0,40)
-	ctx.fillText("金錢:"+Money,0,60)
+	ctx.fillText("分數:"+Score,0,45)
+	ctx.fillText("金錢:"+Money,0,70)
 	ctx.fillText("血量:"+hp,0,20)
+	ctx.fillText("最高紀錄:"+High,0,95)
 	ctx.font="24px Arial";
 	ctx.fillStyle="black";
 	ctx.drawImage(button,640-64,480-64,64,64);
@@ -122,7 +130,7 @@ function Enemy (){
 				notkill = 1;
 				return;
 			}
-
+			//速度
 			if(enemyPath[this.PathDes].y < this.y){
 				this.speedX=0;
 				this.speedY=-64-(clock/100)	;
@@ -202,7 +210,7 @@ function mouseclick(event){
 	}else{
 		//蓋塔
 		if(isBuilding ==true){
-			if( Money >= 50 ){
+			if( Money >= 30 ){
 				var newTower = new Tower()
 				newTower.x=cursor.x-cursor.x%32;
 				newTower.y=cursor.y-cursor.y%32;

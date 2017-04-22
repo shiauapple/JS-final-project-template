@@ -76,7 +76,7 @@ function draw(){
 	if(hp <= 0){
 		clearInterval(intervalID);
 		ctx.font="64px Arial";
-		ctx.fillStyle="white";
+		ctx.fillStyle="Red";
 		ctx.fillText("Game over",150,240);
 		alert("Game over")
 
